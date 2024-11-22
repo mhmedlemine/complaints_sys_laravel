@@ -12,7 +12,7 @@ class CreateInfractionsTable extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->string('label');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

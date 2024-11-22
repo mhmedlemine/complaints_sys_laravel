@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Entreprise extends Model
 {
     protected $fillable = [
-        'code', 'name', 'name_ar', 'neighbourhood_id', 'owner_id', 'status',
-        'type', 'registeredon', 'agent_id', 'lat', 'lon', 'rg', 'notes', 'address'
+        'code', 'name', 'name_ar', 'moughataa_id', 'owner_id', 'status',
+        'type', 'registeredon', 'agent_id', 'lat', 'lon', 'rg', 'notes', 'address', 'neighbourhood', 'agentname'
     ];
 
-    public function neighbourhood()
+    public function moughataa()
     {
-        return $this->belongsTo(Neighbourhood::class);
+        return $this->belongsTo(Moughataa::class);
     }
 
     public function owner()

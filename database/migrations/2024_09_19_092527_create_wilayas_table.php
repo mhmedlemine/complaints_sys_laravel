@@ -12,7 +12,7 @@ class CreateWilayasTable extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->string('name');
-            $table->string('name_ar');
+            $table->string('name_ar')->nullable();
             $table->decimal('lat', 10, 8);
             $table->decimal('lon', 11, 8);
             $table->timestamps();

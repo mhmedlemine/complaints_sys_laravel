@@ -56,13 +56,14 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'sometimes|string|email|max:255|unique:users',
             'phonenumber' => 'sometimes|string|max:8|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:4|confirmed',
             'roles' => 'required|array',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phonenumber' => $request->phonenumber,
             'password' => Hash::make($request->password),
         ]);
 
@@ -85,14 +86,24 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'sometimes|string|email|max:255|unique:users,email,' . $user->id,
             'phonenumber' => 'sometimes|string|max:8|unique:users,phonenumber,' . $user->id,
+            'password' => 'sometimes|string|min:4|confirmed',
             'roles' => 'required|array',
         ]);
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phonenumber' => $request->phonenumber,
-        ]);
+        if ($request->password) {
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phonenumber' => $request->phonenumber,
+                'password' => Hash::make($request->password),
+            ]);
+        } else {
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phonenumber' => $request->phonenumber,
+            ]);
+        }
 
         $roleNames = Role::whereIn('id', $request->roles)->pluck('name');
 
@@ -607,7 +618,7 @@ class AdminController extends Controller
     public function entreprises(Request $request)
     {
         $search = $request->input('search');
-        $entreprises = Entreprise::with('owner', 'agent', 'neighbourhood')->when($search, function ($query, $search) {
+        $entreprises = Entreprise::with('owner', 'agent', 'moughataa')->when($search, function ($query, $search) {
             return $query->where('name', 'like', "%{$search}%")
                 ->orWhere('name_ar', 'like', "%{$search}%");
         })->paginate(10);

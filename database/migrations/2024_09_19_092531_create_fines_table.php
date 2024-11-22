@@ -15,7 +15,7 @@ class CreateFinesTable extends Migration
             $table->dateTime('filledon');
             $table->foreignId('filledby')->constrained('users');
             $table->string('status');
-            $table->date('duedate');
+            $table->date('duedate')->nullable();
             $table->date('paidon')->nullable();
             $table->timestamps();
         });

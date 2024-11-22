@@ -17,4 +17,9 @@ class Moughataa extends Model
     {
         return $this->hasMany(Municipality::class);
     }
+
+    public function entreprises()
+    {
+        return $this->hasMany(Entreprise::class);
+    }
 }

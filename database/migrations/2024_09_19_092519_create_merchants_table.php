@@ -10,10 +10,10 @@ class CreateMerchantsTable extends Migration
     {
         Schema::create('merchants', function (Blueprint $table) {
             $table->id();
-            $table->string('nni')->unique();
+            $table->string('nni')->nullable();
             $table->string('fname');
-            $table->string('lname');
-            $table->string('phonenumber');
+            $table->string('lname')->nullable();
+            $table->string('phonenumber')->unique();
             $table->timestamps();
         });
     }

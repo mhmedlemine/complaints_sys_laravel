@@ -12,7 +12,7 @@ class CreateNeighbourhoodsTable extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->string('name');
-            $table->string('name_ar');
+            $table->string('name_ar')->nullable();
             $table->decimal('lat', 10, 8);
             $table->decimal('lon', 11, 8);
             $table->foreignId('municipality_id')->constrained()->onDelete('cascade');

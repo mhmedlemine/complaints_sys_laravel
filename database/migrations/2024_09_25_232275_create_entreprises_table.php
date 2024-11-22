@@ -12,7 +12,7 @@ class CreateEntreprisesTable extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->string('name');
-            $table->string('name_ar');
+            $table->string('name_ar')->nullable();
             $table->foreignId('neighbourhood_id')->constrained();
             $table->foreignId('owner_id')->constrained('merchants');
             $table->string('status');
@@ -21,9 +21,9 @@ class CreateEntreprisesTable extends Migration
             $table->foreignId('agent_id')->constrained('users');
             $table->decimal('lat', 10, 8);
             $table->decimal('lon', 11, 8);
-            $table->string('rg');
+            $table->string('rg')->nullable();
             $table->text('notes')->nullable();
-            $table->text('address');
+            $table->text('address')->nullable();
             $table->timestamps();
         });
     }

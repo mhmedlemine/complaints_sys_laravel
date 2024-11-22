@@ -14,7 +14,7 @@
                     <th class="py-3 px-6 text-left">Code</th>
                     <th class="py-3 px-6 text-left">Name</th>
                     <th class="py-3 px-6 text-left">Arabic Name</th>
-                    <th class="py-3 px-6 text-left">Neighbourhood</th>
+                    <th class="py-3 px-6 text-left">Moughataa</th>
                     <th class="py-3 px-6 text-left">Owner</th>
                     <th class="py-3 px-6 text-left">Status</th>
                     <th class="py-3 px-6 text-left">Type</th>
@@ -34,7 +34,7 @@
                         <td class="py-3 px-6 text-left whitespace-nowrap">{{ $entreprise->code }}</td>
                         <td class="py-3 px-6 text-left">{{ $entreprise->name }}</td>
                         <td class="py-3 px-6 text-left">{{ $entreprise->name_ar }}</td>
-                        <td class="py-3 px-6 text-left">{{ $entreprise->neighbourhood->name }}</td>
+                        <td class="py-3 px-6 text-left">{{ $entreprise->moughataa->name }}</td>
                         <td class="py-3 px-6 text-left">{{ $entreprise->owner->fname }} {{ $entreprise->owner->lname }}</td>
                         <td class="py-3 px-6 text-left">{{ $entreprise->status }}</td>
                         <td class="py-3 px-6 text-left">{{ $entreprise->type }}</td>

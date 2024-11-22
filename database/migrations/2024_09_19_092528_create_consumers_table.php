@@ -10,11 +10,11 @@ class CreateConsumersTable extends Migration
     {
         Schema::create('consumers', function (Blueprint $table) {
             $table->id();
-            $table->string('nni')->unique();
+            $table->string('nni')->nullable();
             $table->string('fname');
-            $table->string('lname');
-            $table->string('phonenumber');
-            $table->text('address');
+            $table->string('lname')->nullable();
+            $table->string('phonenumber')->unique();
+            $table->text('address')->nullable();
             $table->timestamps();
         });
     }
