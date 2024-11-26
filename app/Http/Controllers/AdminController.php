@@ -30,7 +30,57 @@ class AdminController extends Controller
         $complaintCount = Complaint::count();
         $infractionCount = Infraction::count();
 
-        return view('admin.dashboard', compact('merchantCount', 'entrepriseCount', 'fineCount', 'summonCount', 'complaintCount', 'infractionCount'));
+        $entreprisesByMoughataa = Entreprise::with('moughataa')
+            ->get()
+            ->groupBy('moughataa.name')
+            ->map(function($items) {
+                return $items->count();
+            });
+
+        $entreprisesByType = Entreprise::query()
+            ->select('type')
+            ->selectRaw('COUNT(*) as count')
+            ->groupBy('type')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->type => $item->count];
+            });
+
+        $registrationTrend = Entreprise::selectRaw('DATE(registeredon) as date')
+            ->get()
+            ->groupBy('date')
+            ->map(function($items) {
+                return $items->count();
+            })
+            ->sortKeys();
+
+        $entreprisesByStatus = Entreprise::select('status')
+            ->get()
+            ->groupBy('status')
+            ->map(function($items) {
+                return $items->count();
+            });
+
+        $recentEntreprises = Entreprise::with('moughataa')
+            ->latest('created_at')
+            ->take(5)
+            ->get();
+
+        return view('admin.dashboard', compact(
+            'merchantCount',
+            'entrepriseCount',
+            'summonCount',
+            'fineCount',
+            'complaintCount',
+            'infractionCount',
+            'entreprisesByMoughataa',
+            'entreprisesByType',
+            'registrationTrend',
+            'entreprisesByStatus',
+            'recentEntreprises'
+        ));
+
+        //return view('admin.dashboard', compact('merchantCount', 'entrepriseCount', 'fineCount', 'summonCount', 'complaintCount', 'infractionCount'));
     }
 
     // Users

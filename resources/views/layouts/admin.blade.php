@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Laravel') }} Admin</title>
+    <title>{{ __('messages.app-name') }}</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -15,6 +15,13 @@
 
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        .apexcharts-canvas {
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body class="font-sans antialiased">
     <div x-data="{ sidebarOpen: false }" class="flex h-screen bg-gray-100">
@@ -24,7 +31,7 @@
         <div :class="sidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="fixed inset-y-0 left-0 z-30 w-64 overflow-y-auto transition duration-300 transform bg-gray-800 lg:translate-x-0 lg:static lg:inset-0 lg:h-full">
             <div class="flex items-center justify-center h-16 bg-gray-900">
                 <div class="flex items-center">
-                    <span class="mx-2 text-2xl font-semibold text-white">Admin Panel</span>
+                    <span class="mx-2 text-2xl font-semibold text-white">{{ __('messages.Admin Panel') }}</span>
                 </div>
             </div>
 
@@ -58,5 +65,6 @@
             </main>
         </div>
     </div>
+    @stack('scripts')
 </body>
 </html>

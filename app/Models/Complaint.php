@@ -8,7 +8,7 @@ class Complaint extends Model
 {
     protected $fillable = [
         'code', 'title', 'description', 'greenNumber', 'consumer_id', 'filledon',
-        'receiver_agent_id', 'investigator_agent_id', 'type', 'entreprise_id', 'status', 'address'
+        'receiver_agent_id', 'checkup_id', 'type', 'entreprise_id', 'status', 'address'
     ];
 
     public function consumer()
@@ -21,9 +21,9 @@ class Complaint extends Model
         return $this->belongsTo(User::class, 'receiver_agent_id');
     }
 
-    public function investigator()
+    public function checkup()
     {
-        return $this->belongsTo(User::class, 'investigator_agent_id');
+        return $this->hasOne(Checkup::class);
     }
 
     public function entreprise()

@@ -7,12 +7,16 @@ use Illuminate\Http\Request;
 
 class CheckRole
 {
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-        if (! $request->user()->hasRole($role)) {
-            abort(403);
+        if (!auth()->check()) {
+            return redirect('login');
         }
 
+        if (!$request->user() || !$request->user()->hasAnyRole($roles)) {
+            abort(403, __('messages.Unauthorized action'));
+        }
+      
         return $next($request);
     }
 }

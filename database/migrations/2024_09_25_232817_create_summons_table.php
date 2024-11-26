@@ -15,10 +15,9 @@ class CreateSummonsTable extends Migration
             $table->dateTime('filledon');
             $table->foreignId('agent_id')->constrained('users');
             $table->foreignId('complaint_id')->nullable()->constrained()->onDelete('cascade');
-            $table->text('reason');
-            $table->text('action');
-            $table->date('duedate');
-            // $table->foreignId('infraction_id')->constrained();
+            $table->text('reason')->nullable();
+            $table->text('action')->nullable();
+            $table->date('duedate')->nullable();
             $table->timestamps();
         });
     }

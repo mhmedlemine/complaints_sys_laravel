@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@media (min-width: 1024px) {
+    .lg\:pl-64 {
+        padding-left: 0rem !important;
+    }
+}
+
+.table-responsive {
+  overflow-x: auto; /* Enables horizontal scrolling */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  border: 1px solid #ddd; /* Optional: Add a border */
+}
+
+table {
+  width: 100%; /* Ensures the table takes full width of the container */
+  border-collapse: collapse; /* Optional: Collapses borders */
+}
+
+th, td {
+  padding: 8px; /* Adds padding to table cells */
+  text-align: left; /* Aligns text to the left */
+  border: 1px solid #ddd; /* Optional: Adds borders to cells */
+}

@@ -6,25 +6,21 @@
         <a href="{{ route('admin.entreprises.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Create New Entreprise
         </a>
+
+        <h1><?php echo __('messages.welcome'); ?></h1>
     </div>
-    <div class="bg-white shadow-md rounded my-6">
-        <table class="min-w-max w-full table-auto">
+    <div class="table-responsive bg-white shadow-md rounded my-6">
+        <table class="table min-w-max w-full table-auto">
             <thead>
                 <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                     <th class="py-3 px-6 text-left">Code</th>
                     <th class="py-3 px-6 text-left">Name</th>
-                    <th class="py-3 px-6 text-left">Arabic Name</th>
                     <th class="py-3 px-6 text-left">Moughataa</th>
                     <th class="py-3 px-6 text-left">Owner</th>
                     <th class="py-3 px-6 text-left">Status</th>
                     <th class="py-3 px-6 text-left">Type</th>
                     <th class="py-3 px-6 text-left">Registered on</th>
                     <th class="py-3 px-6 text-left">Registered by</th>
-                    <th class="py-3 px-6 text-left">Latitude</th>
-                    <th class="py-3 px-6 text-left">Longitude by</th>
-                    <th class="py-3 px-6 text-left">Registre commercial</th>
-                    <th class="py-3 px-6 text-left">Notes</th>
-                    <th class="py-3 px-6 text-left">Address</th>
                     <th class="py-3 px-6 text-center">Actions</th>
                 </tr>
             </thead>
@@ -33,17 +29,12 @@
                     <tr class="border-b border-gray-200 hover:bg-gray-100">
                         <td class="py-3 px-6 text-left whitespace-nowrap">{{ $entreprise->code }}</td>
                         <td class="py-3 px-6 text-left">{{ $entreprise->name }}</td>
-                        <td class="py-3 px-6 text-left">{{ $entreprise->name_ar }}</td>
                         <td class="py-3 px-6 text-left">{{ $entreprise->moughataa->name }}</td>
                         <td class="py-3 px-6 text-left">{{ $entreprise->owner->fname }} {{ $entreprise->owner->lname }}</td>
                         <td class="py-3 px-6 text-left">{{ $entreprise->status }}</td>
                         <td class="py-3 px-6 text-left">{{ $entreprise->type }}</td>
                         <td class="py-3 px-6 text-left">{{ $entreprise->registeredon }}</td>
                         <td class="py-3 px-6 text-left">{{ $entreprise->agent->name }}</td>
-                        <td class="py-3 px-6 text-left">{{ $entreprise->lat }}</td>
-                        <td class="py-3 px-6 text-left">{{ $entreprise->lon }}</td>
-                        <td class="py-3 px-6 text-left">{{ $entreprise->notes }}</td>
-                        <td class="py-3 px-6 text-left">{{ $entreprise->address }}</td>
                         <td class="py-3 px-6 text-center">
                             <div class="flex item-center justify-center">
                                 <a href="{{ route('admin.entreprises.show', $entreprise) }}" class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
@@ -55,6 +46,12 @@
                                 <a href="{{ route('admin.entreprises.edit', $entreprise) }}" class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                    </svg>
+                                </a> 
+                                <a href="https://www.google.com/maps?q={{ $entreprise->lat }},{{ $entreprise->lon }}" target="_blank" class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" fill="none">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                 </a>
                                 <form action="{{ route('admin.entreprises.delete', $entreprise) }}" method="POST" class="inline">

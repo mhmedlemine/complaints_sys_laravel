@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CheckupController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('/admin');
 });
+
+Route::get('language/{lang}', [LanguageController::class, 'switchLang'])->name('language.switch');
 
 Route::get('/dashboard', function () {
     return redirect('/admin');
@@ -40,20 +44,20 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/admin/users/{user}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
     Route::get('/admin/users/{user}', [AdminController::class, 'showUser'])->name('admin.users.show');
     // Roles
-    // Route::get('/admin/roles', [AdminController::class, 'roles'])->name('admin.roles');
-    // Route::get('/admin/roles/create', [AdminController::class, 'createRole'])->name('admin.roles.create');
-    // Route::post('/admin/roles', [AdminController::class, 'storeRole'])->name('admin.roles.store');
-    // Route::get('/admin/roles/{role}/edit', [AdminController::class, 'editRole'])->name('admin.roles.edit');
-    // Route::put('/admin/roles/{role}', [AdminController::class, 'updateRole'])->name('admin.roles.update');
-    // Route::delete('/admin/roles/{role}', [AdminController::class, 'deleteRole'])->name('admin.roles.delete');
-    // Route::get('/admin/roles/{role}', [AdminController::class, 'showRole'])->name('admin.roles.show');
-    // // Permissions
-    // Route::get('/admin/permissions', [AdminController::class, 'permissions'])->name('admin.permissions');
-    // Route::get('/admin/permissions/create', [AdminController::class, 'createPermission'])->name('admin.permissions.create');
-    // Route::post('/admin/permissions', [AdminController::class, 'storePermission'])->name('admin.permissions.store');
-    // Route::get('/admin/permissions/{permission}/edit', [AdminController::class, 'editPermission'])->name('admin.permissions.edit');
-    // Route::put('/admin/permissions/{permission}', [AdminController::class, 'updatePermission'])->name('admin.permissions.update');
-    // Route::delete('/admin/permissions/{permission}', [AdminController::class, 'deletePermission'])->name('admin.permissions.delete');
+    Route::get('/admin/roles', [AdminController::class, 'roles'])->name('admin.roles');
+    Route::get('/admin/roles/create', [AdminController::class, 'createRole'])->name('admin.roles.create');
+    Route::post('/admin/roles', [AdminController::class, 'storeRole'])->name('admin.roles.store');
+    Route::get('/admin/roles/{role}/edit', [AdminController::class, 'editRole'])->name('admin.roles.edit');
+    Route::put('/admin/roles/{role}', [AdminController::class, 'updateRole'])->name('admin.roles.update');
+    Route::delete('/admin/roles/{role}', [AdminController::class, 'deleteRole'])->name('admin.roles.delete');
+    Route::get('/admin/roles/{role}', [AdminController::class, 'showRole'])->name('admin.roles.show');
+    // Permissions
+    Route::get('/admin/permissions', [AdminController::class, 'permissions'])->name('admin.permissions');
+    Route::get('/admin/permissions/create', [AdminController::class, 'createPermission'])->name('admin.permissions.create');
+    Route::post('/admin/permissions', [AdminController::class, 'storePermission'])->name('admin.permissions.store');
+    Route::get('/admin/permissions/{permission}/edit', [AdminController::class, 'editPermission'])->name('admin.permissions.edit');
+    Route::put('/admin/permissions/{permission}', [AdminController::class, 'updatePermission'])->name('admin.permissions.update');
+    Route::delete('/admin/permissions/{permission}', [AdminController::class, 'deletePermission'])->name('admin.permissions.delete');
     // Wilayas
     Route::get('/admin/wilayas', [AdminController::class, 'wilayas'])->name('admin.wilayas');
     Route::get('/admin/wilayas/create', [AdminController::class, 'createWilaya'])->name('admin.wilayas.create');
@@ -110,6 +114,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/admin/entreprises/{entreprise}', [AdminController::class, 'updateEntreprise'])->name('admin.entreprises.update');
     Route::delete('/admin/entreprises/{entreprise}', [AdminController::class, 'deleteEntreprise'])->name('admin.entreprises.delete');
     Route::get('/admin/entreprises/{entreprise}', [AdminController::class, 'showEntreprise'])->name('admin.entreprises.show');
+    // Checkups
+    Route::get('/admin/checkups', [CheckupController::class, 'index'])->name('admin.checkups.index');
+    Route::get('/admin/checkups/create', [CheckupController::class, 'create'])->name('admin.checkups.create');
+    Route::post('/admin/checkups', [CheckupController::class, 'store'])->name('admin.checkups.store');
+    Route::get('/admin/checkups/{checkup}/edit', [CheckupController::class, 'index'])->name('admin.checkups.edit');
+    Route::put('/admin/checkups/{checkup}', [CheckupController::class, 'index'])->name('admin.checkups.update');
+    Route::delete('/admin/checkups/{checkup}', [CheckupController::class, 'index'])->name('admin.checkups.delete');
+    Route::get('/admin/checkups/{checkup}', [CheckupController::class, 'index'])->name('admin.checkups.show');
     // Complaints
     Route::get('/admin/complaints', [AdminController::class, 'complaints'])->name('admin.complaints');
     Route::get('/admin/complaints/create', [AdminController::class, 'createComplaint'])->name('admin.complaints.create');
@@ -142,6 +154,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/admin/fines/{fine}', [AdminController::class, 'updateFine'])->name('admin.fines.update');
     Route::delete('/admin/fines/{fine}', [AdminController::class, 'deleteFine'])->name('admin.fines.delete');
     Route::get('/admin/fines/{fine}', [AdminController::class, 'showFine'])->name('admin.fines.show');
+});
+
+Route::middleware(['auth', 'role:higher-mgmt,admin'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 });
 
 require __DIR__.'/auth.php';
