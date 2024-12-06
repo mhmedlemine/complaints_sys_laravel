@@ -48,6 +48,9 @@
                     <x-nav-link :href="route('admin.entreprises')" :active="request()->routeIs('admin.entreprises')">
                         {{ __('Entreprises') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('admin.checkups')" :active="request()->routeIs('admin.checkups')">
+                        Checkups
+                    </x-nav-link>
                     <x-nav-link :href="route('admin.complaints')" :active="request()->routeIs('admin.complaints')">
                         {{ __('Complaints') }}
                     </x-nav-link>

@@ -7,6 +7,7 @@ use App\Models\Entreprise;
 use App\Models\Merchant;
 use App\Models\Moughataa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class EntrepriseController extends Controller
@@ -65,13 +66,25 @@ class EntrepriseController extends Controller
             ], 422);
         }
     
+        // return response()->json(['debug' => $request->all()]);
+
         try {
+            $picture = null;
+            if ($request->hasFile('picture_file') && $request->file('picture_file')->isValid()) {
+                $filePath = $request->picture_file->store('shop_pictures', 'public');
+                $picture = [
+                    'file_path' => $filePath,
+                    'file_type' => 'image',
+                    'uploaded_by' => auth()->id(),
+                    'uploaded_at' => now(),
+                ];
+            }
+
+            $request->request->remove('picture_file');
             $data = array_merge($request->all(), [
-                'name_ar' => 'لا يوجد',
-                'status' => 'OK',
-                'rg' => '0',
-                'address' => '',
+                'status' => 'open',
                 'agent_id' => $request->user()->id,
+                'picture' => $picture,
                 'registeredon' => now()
             ]);
     
@@ -150,6 +163,34 @@ class EntrepriseController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error retrieving Moughataas',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getEntrepriseCode(Request $request)
+    {
+        try {
+            $latestCode = DB::table('entreprises')
+                ->where('code', 'like', $request['code'].'%')
+                ->orderBy('id', 'desc')
+                ->value('code');
+
+            if ($latestCode) {
+                $numericPart = intval(substr($latestCode, 4)) + 1;
+                $newCode = $request['code'] . $numericPart;
+                return response()->json(
+                    $newCode
+                );
+            } else {
+                $newCode = $request['code'] . '01';
+                return response()->json(
+                    $newCode
+                );
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error generating new code',
                 'error' => $e->getMessage()
             ], 500);
         }

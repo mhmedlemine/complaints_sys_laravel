@@ -11,13 +11,12 @@ class CreateSummonsTable extends Migration
         Schema::create('summons', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
-            $table->string('status');
-            $table->dateTime('filledon');
+            $table->foreignId('checkup_id')->constrained();
+            $table->enum('status', ['pending', 'fined', 'completed', 'appealed']);
+            $table->timestamp('filledon');
             $table->foreignId('agent_id')->constrained('users');
-            $table->foreignId('complaint_id')->nullable()->constrained()->onDelete('cascade');
-            $table->text('reason')->nullable();
-            $table->text('action')->nullable();
-            $table->date('duedate')->nullable();
+            $table->foreignId('entreprise_id')->constrained();
+            $table->date('duedate');
             $table->timestamps();
         });
     }

@@ -44,6 +44,11 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                     </svg>
                                 </a>
+                                <a href="{{ route('admin.users.changepassword', $user) }}" class="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm6-4V9a6 6 0 00-12 0v2H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2v-6a2 2 0 00-2-2h-2zm-8 0V9a4 4 0 018 0v2H6z" />
+                                </svg>
+                                </a>
                                 <form action="{{ route('admin.users.delete', $user) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')

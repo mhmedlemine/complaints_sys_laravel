@@ -7,8 +7,28 @@ use Illuminate\Database\Eloquent\Model;
 class Entreprise extends Model
 {
     protected $fillable = [
-        'code', 'name', 'name_ar', 'moughataa_id', 'owner_id', 'status',
-        'type', 'registeredon', 'agent_id', 'lat', 'lon', 'rg', 'notes', 'address', 'neighbourhood', 'agentname'
+        'code',
+        'name',
+        'name_ar',
+        'contact_number',
+        'moughataa_id',
+        'owner_id',
+        'status', // 'open', 'summoned', 'closed'
+        'type',
+        'registeredon',
+        'agent_id',
+        'lat',
+        'lon',
+        'rg',
+        'notes',
+        'address',
+        'neighbourhood',
+        'agentname',
+        'picture',
+    ];
+
+    protected $casts = [
+        'picture' => 'array',
     ];
 
     public function moughataa()

@@ -1,54 +1,116 @@
 @extends('layouts.admin')
 
 @section('content')
-    <h2 class="text-2xl font-semibold mb-4">Edit Complaint</h2>
-    <form action="{{ route('admin.complaints.update', $complaint) }}" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        @csrf
-        @method('PUT')
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="code">
-                Code
-            </label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="code" type="text" name="code" value="{{ $complaint->code }}" required>
-        </div>
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
-                Title
-            </label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="title" type="text" name="title" value="{{ $complaint->title }}" required>
-        </div>
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
-                Description
-            </label>
-            <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="description" name="description" required>{{ $complaint->description }}</textarea>
-        </div>
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="status">
-                Status
-            </label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="status" type="text" name="status" value="{{ $complaint->status }}" required>
-        </div>
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="filedon">
-                Filed On
-            </label>
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="filledon" type="date" name="filledon" value="{{ $complaint->filledon }}" required>
-        </div>
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="consumer_id">
-                Filed By
-            </label>
-            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="consumer_id" name="consumer_id" required>
-                @foreach($consumers as $consumer)
-                    <option value="{{ $consumer->id }}" {{ $complaint->consumer_id == $consumer->id ? 'selected' : '' }}>{{ $consumer->fname }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="flex items-center justify-between">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
-                Update Complaint
-            </button>
-        </div>
-    </form>
+<div class="container mx-auto px-6 py-8">
+    <div class="flex justify-between items-center">
+        <h3 class="text-gray-700 text-3xl font-medium">Edit Complaint</h3>
+    </div>
+
+    <div class="mt-8">
+        <form action="{{ route('admin.complaints.update', $complaint) }}" method="POST" class="space-y-6">
+            @csrf
+            @method('PUT')
+
+            <div class="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
+                <div>
+                    <label class="text-gray-700" for="title">Title</label>
+                    <input type="text" name="title" id="title" value="{{ old('title', $complaint->title) }}"
+                           class="form-input w-full mt-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    @error('title')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="text-gray-700" for="consumer_id">Consumer</label>
+                    <select name="consumer_id" id="consumer_id" class="form-select w-full mt-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        <option value="">Select Consumer...</option>
+                        @foreach($consumers as $consumer)
+                            <option value="{{ $consumer->id }}" {{ old('consumer_id', $complaint->consumer_id) == $consumer->id ? 'selected' : '' }}>
+                                {{ $consumer->fname }} {{ $consumer->lname }} - {{ $consumer->phonenumber }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('consumer_id')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="text-gray-700" for="entreprise_id">Enterprise</label>
+                    <select name="entreprise_id" id="entreprise_id" class="form-select w-full mt-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        <option value="">Select Enterprise...</option>
+                        @foreach($entreprises as $entreprise)
+                            <option value="{{ $entreprise->id }}" {{ old('entreprise_id', $complaint->entreprise_id) == $entreprise->id ? 'selected' : '' }}>
+                                {{ $entreprise->name }} - {{ $entreprise->code }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('entreprise_id')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="text-gray-700" for="status">Status</label>
+                    <select name="status" id="status" class="form-select w-full mt-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        <option value="pending" {{ old('status', $complaint->status) == 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="assigned" {{ old('status', $complaint->status) == 'assigned' ? 'selected' : '' }}>Assigned</option>
+                        <option value="investigating" {{ old('status', $complaint->status) == 'investigating' ? 'selected' : '' }}>Investigating</option>
+                        <option value="resolved" {{ old('status', $complaint->status) == 'resolved' ? 'selected' : '' }}>Resolved</option>
+                    </select>
+                    @error('status')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="text-gray-700" for="priority">Priority</label>
+                    <select name="priority" id="priority" class="form-select w-full mt-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        <option value="low" {{ old('priority', $complaint->priority) == 'low' ? 'selected' : '' }}>Low</option>
+                        <option value="medium" {{ old('priority', $complaint->priority) == 'medium' ? 'selected' : '' }}>Medium</option>
+                        <option value="high" {{ old('priority', $complaint->priority) == 'high' ? 'selected' : '' }}>High</option>
+                    </select>
+                    @error('priority')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="text-gray-700" for="greenNumber">Green Number</label>
+                    <input type="text" name="greenNumber" id="greenNumber" value="{{ old('greenNumber', $complaint->greenNumber) }}"
+                           class="form-input w-full mt-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    @error('greenNumber')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label class="text-gray-700" for="shop_address">Shop Address</label>
+                    <input type="text" name="shop_address" id="shop_address" value="{{ old('shop_address', $complaint->shop_address) }}"
+                           class="form-input w-full mt-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    @error('shop_address')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label class="text-gray-700" for="description">Description</label>
+                    <textarea name="description" id="description" rows="4"
+                              class="form-textarea w-full mt-2 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">{{ old('description', $complaint->description) }}</textarea>
+                    @error('description')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="flex justify-end mt-6">
+                <button type="submit"
+                        class="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600">
+                    Update Complaint
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection

@@ -12,15 +12,20 @@ class Checkup extends Model
         'agent_id',
         'entreprise_id',
         'complaint_id',
-        'date',
-        'type', // 'regular', 'complaint'
-        'status', // 'pending', 'clean', 'with_infractions'
-        'action_taken', // 'none', 'closed'
-        'notes'
+        'started_at',
+        'completed_at',
+        'canceled_at',
+        'type',              // 'regular', 'complaint'
+        'status',            // 'pending', 'in_progress', 'clean', 'with_infractions', 'canceled'
+        'investigation_result', // 'all_confirmed', 'all_false', 'partially_confirmed'
+        'action_taken',      // 'none', 'closed', 'summon_issued'
+        'notes',
     ];
 
     protected $casts = [
-        'date' => 'datetime'
+        'started_at' => 'datetime',
+        'completed_at' => 'datetime',
+        'canceled_at' => 'datetime',
     ];
 
     public function agent()
@@ -35,12 +40,19 @@ class Checkup extends Model
 
     public function complaint()
     {
-        return $this->hasOne(Complaint::class);
+        return $this->belongsTo(Complaint::class);
     }
 
     public function checkupInfractions()
     {
         return $this->hasMany(CheckupInfraction::class);
+    }
+
+    public function infractions()
+    {
+        return $this->belongsToMany(Infraction::class, 'checkup_infractions')
+            ->withPivot(['custom_infraction_text', 'notes', 'status', 'verified_at'])
+            ->withTimestamps();
     }
 
     public function summon()

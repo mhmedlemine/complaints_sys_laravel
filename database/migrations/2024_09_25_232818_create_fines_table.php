@@ -11,12 +11,16 @@ class CreateFinesTable extends Migration
         Schema::create('fines', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
+            $table->foreignId('summon_id')->constrained();
             $table->decimal('amount', 10, 2);
-            $table->dateTime('filledon');
-            $table->foreignId('filledby')->constrained('users');
-            $table->string('status');
-            $table->date('duedate')->nullable();
-            $table->date('paidon')->nullable();
+            $table->enum('status', ['pending', 'paid', 'appealed']);
+            $table->date('duedate');
+            $table->timestamp('issued_on');
+            $table->foreignId('issued_by')->constrained('users');
+            $table->timestamp('paid_on')->nullable();
+            $table->text('notes')->nullable();
+            $table->string('receipt_number')->nullable();
+            $table->timestamp('receipt_date')->nullable();
             $table->timestamps();
         });
     }

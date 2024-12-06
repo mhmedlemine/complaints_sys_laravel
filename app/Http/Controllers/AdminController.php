@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Checkup;
+use App\Models\CheckupInfraction;
 use App\Models\Complaint;
 use App\Models\Consumer;
 use App\Models\Entreprise;
@@ -15,6 +17,7 @@ use App\Models\Summon;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Wilaya;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -24,8 +27,10 @@ class AdminController extends Controller
     public function dashboard()
     {
         $merchantCount = Merchant::count();
+        $consumerCount = Consumer::count();
         $entrepriseCount = Entreprise::count();
         $fineCount = Fine::count();
+        $checkupCount = Checkup::count();
         $summonCount = Summon::count();
         $complaintCount = Complaint::count();
         $infractionCount = Infraction::count();
@@ -33,7 +38,7 @@ class AdminController extends Controller
         $entreprisesByMoughataa = Entreprise::with('moughataa')
             ->get()
             ->groupBy('moughataa.name')
-            ->map(function($items) {
+            ->map(function ($items) {
                 return $items->count();
             });
 
@@ -49,7 +54,7 @@ class AdminController extends Controller
         $registrationTrend = Entreprise::selectRaw('DATE(registeredon) as date')
             ->get()
             ->groupBy('date')
-            ->map(function($items) {
+            ->map(function ($items) {
                 return $items->count();
             })
             ->sortKeys();
@@ -57,7 +62,7 @@ class AdminController extends Controller
         $entreprisesByStatus = Entreprise::select('status')
             ->get()
             ->groupBy('status')
-            ->map(function($items) {
+            ->map(function ($items) {
                 return $items->count();
             });
 
@@ -66,9 +71,64 @@ class AdminController extends Controller
             ->take(5)
             ->get();
 
+        // Calculate compliance rate
+        $totalCheckups = Checkup::count();
+        $cleanCheckups = Checkup::where('status', 'clean')->count();
+        $complianceRate = $totalCheckups > 0 ? round(($cleanCheckups / $totalCheckups) * 100, 1) : 0;
+
+        // Get most common infractions
+        $commonInfractions = CheckupInfraction::with('infraction')
+            ->select('infraction_id', DB::raw('count(*) as total'))
+            ->whereNotNull('infraction_id')
+            ->groupBy('infraction_id')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
+
+        // Get pending summons count
+        $pendingSummons = Summon::where('status', 'pending')->count();
+
+        // Areas with highest complaints
+        $complaintHotspots = Complaint::with('entreprise.moughataa')
+            ->select('entreprise_id', DB::raw('count(*) as total'))
+            ->groupBy('entreprise_id')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->get();
+
+        $todaysWork = [
+            'entreprises' => Entreprise::with(['agent', 'moughataa', 'owner'])
+                ->whereDate('created_at', today())
+                ->latest()
+                ->take(50)
+                ->get(),
+            'checkups' => Checkup::with(['agent', 'entreprise'])
+                ->whereDate('created_at', today())
+                ->latest()
+                ->take(50)
+                ->get(),
+            'complaints' => Complaint::with(['consumer', 'entreprise'])
+                ->whereDate('created_at', today())
+                ->latest()
+                ->take(50)
+                ->get(),
+            'summons' => Summon::with(['agent', 'entreprise'])
+                ->whereDate('created_at', today())
+                ->latest()
+                ->take(50)
+                ->get(),
+            'fines' => Fine::with(['summon', 'entreprise'])
+                ->whereDate('created_at', today())
+                ->latest()
+                ->take(50)
+                ->get(),
+        ];
+
         return view('admin.dashboard', compact(
             'merchantCount',
+            'consumerCount',
             'entrepriseCount',
+            'checkupCount',
             'summonCount',
             'fineCount',
             'complaintCount',
@@ -77,10 +137,13 @@ class AdminController extends Controller
             'entreprisesByType',
             'registrationTrend',
             'entreprisesByStatus',
-            'recentEntreprises'
+            'recentEntreprises',
+            'complianceRate',
+            'commonInfractions',
+            'pendingSummons',
+            'complaintHotspots',
+            'todaysWork'
         ));
-
-        //return view('admin.dashboard', compact('merchantCount', 'entrepriseCount', 'fineCount', 'summonCount', 'complaintCount', 'infractionCount'));
     }
 
     // Users
@@ -136,28 +199,36 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'sometimes|string|email|max:255|unique:users,email,' . $user->id,
             'phonenumber' => 'sometimes|string|max:8|unique:users,phonenumber,' . $user->id,
-            'password' => 'sometimes|string|min:4|confirmed',
             'roles' => 'required|array',
         ]);
 
-        if ($request->password) {
-            $user->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'phonenumber' => $request->phonenumber,
-                'password' => Hash::make($request->password),
-            ]);
-        } else {
-            $user->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'phonenumber' => $request->phonenumber,
-            ]);
-        }
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phonenumber' => $request->phonenumber,
+        ]);
 
         $roleNames = Role::whereIn('id', $request->roles)->pluck('name');
 
         $user->syncRoles($roleNames);
+
+        return redirect()->route('admin.users')->with('success', 'User updated successfully.');
+    }
+
+    public function editPassword(User $user)
+    {
+        return view('admin.users.changepassword', compact('user'));
+    }
+
+    public function updatePassword(Request $request, User $user)
+    {
+        $request->validate([
+            'password' => 'required|string|min:4|confirmed',
+        ]);
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
 
         return redirect()->route('admin.users')->with('success', 'User updated successfully.');
     }

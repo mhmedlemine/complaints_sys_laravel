@@ -13,17 +13,22 @@ class CreateEntreprisesTable extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->string('name_ar')->nullable();
-            $table->foreignId('neighbourhood_id')->constrained();
+            $table->string('contact_number')->nullable();
+            $table->json('picture')->nullable();
+            $table->foreignId('moughataa_id')->constrained();
             $table->foreignId('owner_id')->constrained('merchants');
-            $table->string('status');
+            $table->enum('status', ['open', 'summoned', 'closed']);
             $table->string('type');
-            $table->date('registeredon');
+            $table->timestamp('registeredon');
             $table->foreignId('agent_id')->constrained('users');
             $table->decimal('lat', 10, 8);
             $table->decimal('lon', 11, 8);
             $table->string('rg')->nullable();
             $table->text('notes')->nullable();
             $table->text('address')->nullable();
+            $table->json('evidence_files')->nullable();
+            $table->string('neighbourhood')->nullable();
+            $table->string('agentname')->nullable();
             $table->timestamps();
         });
     }

@@ -55,18 +55,13 @@ class User extends Authenticatable
         return $this->hasMany(Complaint::class, 'receiver');
     }
 
-    public function investigatedComplaints()
-    {
-        return $this->hasMany(Complaint::class, 'investigator');
-    }
-
     public function filledSummons()
     {
-        return $this->hasMany(Summon::class, 'filledby');
+        return $this->hasMany(Summon::class, 'agent_id');
     }
 
     public function filledFines()
     {
-        return $this->hasMany(Fine::class, 'filledby');
+        return $this->hasMany(Fine::class, 'issued_by');
     }
 }

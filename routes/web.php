@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CheckupController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Web\ComplaintController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,6 +42,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
     Route::get('/admin/users/{user}/edit', [AdminController::class, 'editUser'])->name('admin.users.edit');
     Route::put('/admin/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
+    Route::get('/admin/users/{user}/changepassword', [AdminController::class, 'editPassword'])->name('admin.users.changepassword');
+    Route::put('/admin/users/{user}/changepassword', [AdminController::class, 'updatePassword'])->name('admin.users.changepassword');
     Route::delete('/admin/users/{user}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
     Route::get('/admin/users/{user}', [AdminController::class, 'showUser'])->name('admin.users.show');
     // Roles
@@ -116,20 +119,27 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/entreprises/{entreprise}', [AdminController::class, 'showEntreprise'])->name('admin.entreprises.show');
     // Checkups
     Route::get('/admin/checkups', [CheckupController::class, 'index'])->name('admin.checkups.index');
-    Route::get('/admin/checkups/create', [CheckupController::class, 'create'])->name('admin.checkups.create');
-    Route::post('/admin/checkups', [CheckupController::class, 'store'])->name('admin.checkups.store');
-    Route::get('/admin/checkups/{checkup}/edit', [CheckupController::class, 'index'])->name('admin.checkups.edit');
-    Route::put('/admin/checkups/{checkup}', [CheckupController::class, 'index'])->name('admin.checkups.update');
-    Route::delete('/admin/checkups/{checkup}', [CheckupController::class, 'index'])->name('admin.checkups.delete');
-    Route::get('/admin/checkups/{checkup}', [CheckupController::class, 'index'])->name('admin.checkups.show');
+    Route::get('/admin/checkups/{checkup}', [CheckupController::class, 'show'])->name('admin.checkups.show');
+    Route::get('/admin/checkups/export', [CheckupController::class, 'export'])->name('admin.checkups.export');
     // Complaints
-    Route::get('/admin/complaints', [AdminController::class, 'complaints'])->name('admin.complaints');
-    Route::get('/admin/complaints/create', [AdminController::class, 'createComplaint'])->name('admin.complaints.create');
-    Route::post('/admin/complaints', [AdminController::class, 'storeComplaint'])->name('admin.complaints.store');
-    Route::get('/admin/complaints/{complaint}/edit', [AdminController::class, 'editComplaint'])->name('admin.complaints.edit');
-    Route::put('/admin/complaints/{complaint}', [AdminController::class, 'updateComplaint'])->name('admin.complaints.update');
-    Route::delete('/admin/complaints/{complaint}', [AdminController::class, 'deleteComplaint'])->name('admin.complaints.delete');
-    Route::get('/admin/complaints/{complaint}', [AdminController::class, 'showComplaint'])->name('admin.complaints.show');
+    Route::get('/admin/complaints', [ComplaintController::class, 'index'])->name('admin.complaints.index');
+    Route::get('/admin/complaints/create', [ComplaintController::class, 'create'])->name('admin.complaints.create');
+    Route::post('/admin/complaints', [ComplaintController::class, 'store'])->name('admin.complaints.store');
+    Route::get('/admin/complaints/{complaint}', [ComplaintController::class, 'show'])->name('admin.complaints.show');
+    Route::get('/admin/complaints/{complaint}/edit', [ComplaintController::class, 'edit'])->name('admin.complaints.edit');
+    Route::put('/admin/complaints/{complaint}', [ComplaintController::class, 'update'])->name('admin.complaints.update');
+    Route::delete('/admin/complaints/{complaint}', [ComplaintController::class, 'destroy'])->name('admin.complaints.destroy');
+    Route::get('/admin/complaints/{complaint}/assign', [ComplaintController::class, 'assignComplaint'])->name('admin.complaints.assign');
+    Route::post('/admin/complaints/{complaint}/assign', [ComplaintController::class, 'storeAssignment'])->name('admin.complaints.storeAssignment');
+    Route::get('/get-available-agents', [ComplaintController::class, 'getAvailableAgents'])->name('admin.complaints.agents');
+
+    // Route::get('/admin/complaints', [AdminController::class, 'complaints'])->name('admin.complaints');
+    // Route::get('/admin/complaints/create', [AdminController::class, 'createComplaint'])->name('admin.complaints.create');
+    // Route::post('/admin/complaints', [AdminController::class, 'storeComplaint'])->name('admin.complaints.store');
+    // Route::get('/admin/complaints/{complaint}/edit', [AdminController::class, 'editComplaint'])->name('admin.complaints.edit');
+    // Route::put('/admin/complaints/{complaint}', [AdminController::class, 'updateComplaint'])->name('admin.complaints.update');
+    // Route::delete('/admin/complaints/{complaint}', [AdminController::class, 'deleteComplaint'])->name('admin.complaints.delete');
+    // Route::get('/admin/complaints/{complaint}', [AdminController::class, 'showComplaint'])->name('admin.complaints.show');
     // Infractions
     Route::get('/admin/infractions', [AdminController::class, 'infractions'])->name('admin.infractions');
     Route::get('/admin/infractions/create', [AdminController::class, 'createInfraction'])->name('admin.infractions.create');
